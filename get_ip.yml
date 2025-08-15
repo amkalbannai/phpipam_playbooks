@@ -1,0 +1,63 @@
+---
+- name: Reserve IP from phpIPAM
+  hosts: localhost
+  gather_facts: false
+  vars:
+    phpipam_url: "https://10.20.30.6/api"
+    phpipam_app: "ansible"
+    phpipam_user: "apiuser"
+    phpipam_pass: "TooManySymbols"
+    subnet_id: 7
+    vm_hostname: "changeme"
+
+  tasks:
+    - name: Authenticate to phpIPAM
+      uri:
+        url: "{{ phpipam_url }}/{{ phpipam_app }}/user/"
+        method: POST
+        user: "{{ phpipam_user }}"
+        password: "{{ phpipam_pass }}"
+        force_basic_auth: yes
+        return_content: yes
+        status_code: 200
+        validate_certs: no
+      register: login_response
+
+    - name: Save auth token
+      set_fact:
+        phpipam_token: "{{ login_response.json.data.token }}"
+
+    - name: Get first free IP in subnet
+      uri:
+        url: "{{ phpipam_url }}/{{ phpipam_app }}/subnets/{{ subnet_id }}/first_free/"
+        method: GET
+        headers:
+          token: "{{ phpipam_token }}"
+        return_content: yes
+        validate_certs: no
+      register: freeip_response
+
+    - name: Register the IP in phpIPAM
+      uri:
+        url: "{{ phpipam_url }}/{{ phpipam_app }}/addresses/"
+        method: POST
+        headers:
+          token: "{{ phpipam_token }}"
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          subnetId: "{{ subnet_id }}"
+          ip: "{{ freeip_response.json.data }}"
+          hostname: "{{ vm_hostname }}"
+        return_content: yes
+        validate_certs: no
+      register: reserve_response
+
+    - name: Print reserved IP and hostname
+      debug:
+        msg: "Reserved IP {{ freeip_response.json.data }} for hostname {{ vm_hostname }}"
+
+    - name: Make reserved IP available to next workflow step
+      set_stats:
+        data:
+          reserved_ip: "{{ freeip_response.json.data }}"
