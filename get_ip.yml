@@ -49,6 +49,7 @@
           subnetId: "{{ subnet_id }}"
           ip: "{{ freeip_response.json.data }}"
           hostname: "{{ vm_hostname }}"
+          description: "Registered by Ansible"
         return_content: yes
         validate_certs: no
       register: reserve_response
