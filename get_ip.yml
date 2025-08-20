@@ -1,6 +1,6 @@
 ---
 - name: Reserve IP from phpIPAM
-  hosts: localhost
+  hosts: vlxlocalawx3
   gather_facts: false
   vars:
     phpipam_url: "https://10.20.30.6/api"
