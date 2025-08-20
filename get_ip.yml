@@ -10,11 +10,7 @@
     subnet_id: 7
     vm_hostname: "changeme"
 
-  tasks:
-    - name: ping test
-      ping:
-        host: "10.20.30.6"
-      
+  tasks:      
     - name: Authenticate to phpIPAM
       uri:
         url: "{{ phpipam_url }}/{{ phpipam_app }}/user/"
