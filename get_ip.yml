@@ -13,7 +13,7 @@
   tasks:      
     - name: Authenticate to phpIPAM
       uri:
-        url: "{{ phpipam_url }}/{{ phpipam_app }}/user/"
+        url: "{{ phpipam_url }}/{{ phpipam_app }}/user/login/"
         method: POST
         headers:
           Content-Type: "application/json"
