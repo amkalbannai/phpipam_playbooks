@@ -15,9 +15,12 @@
       uri:
         url: "{{ phpipam_url }}/{{ phpipam_app }}/user/"
         method: POST
-        user: "{{ phpipam_user }}"
-        password: "{{ phpipam_pass }}"
-        force_basic_auth: yes
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          username: "{{ phpipam_user }}"
+          password: "{{ phpipam_pass }}"
         return_content: yes
         status_code: 200
         validate_certs: no
