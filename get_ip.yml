@@ -3,7 +3,7 @@
   hosts: vlxlocalawx3
   gather_facts: false
   vars:
-    phpipam_url: "http://10.20.30.6/api"
+    phpipam_url: "https://10.20.30.6/api"
     phpipam_app: "ansible"
     phpipam_user: "apiuser"
     phpipam_pass: "TooManySymbols"
